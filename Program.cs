@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using GitHubApi.Users.Example;
+using GitHubApi.Repositories.Example;
 
 namespace GitHubApiClientExample
 {
@@ -15,18 +15,23 @@ namespace GitHubApiClientExample
         static async Task RunAsync()
         {
             var username = "octocat";
-            var gitHubUsersApiClientExample = new GitHubUsersApiClientExample();
+            var gitHubRepositoriesApiClientExample = new GitHubRepositoriesApiClientExample();
 
             try
             {
-                var user = await gitHubUsersApiClientExample.GetUserAsync(username);
-                Console.WriteLine($"User login: {user.Login}");
-                Console.WriteLine($"User name: {user.Name}");
-                Console.WriteLine($"Repositories URL: {user.ReposUrl}");
+                var repositories = await gitHubRepositoriesApiClientExample.GetRepositoriesForUserAsync(username);
+
+                foreach (var repository in repositories)
+                {
+                    Console.WriteLine($"Repository name: {repository.Name}");
+                    Console.WriteLine($"Repository owner: {repository.Owner.Login}");
+                    Console.WriteLine($"Repository URL: {repository.Url}");
+                    Console.WriteLine("---");
+                }
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"Error getting user {username} from GitHub: {(int)ex.StatusCode} ({ex.StatusCode})");
+                Console.WriteLine($"Error getting repositories for user {username} from GitHub: {(int)ex.StatusCode} ({ex.StatusCode})");
             }
         }
     }
